@@ -94,10 +94,11 @@ class player(pygame.sprite.Sprite):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE), 
         self.rect = self.image.get_rect()
-        self.rect.x = 0
-        self.rect.y = 480
+        self.rect.x = 100
+        self.rect.y = 100
         self.jump_height= 12
         self.vel_y = 0
+        self.move = 5
     
 
     def update(self):
@@ -113,18 +114,28 @@ class player(pygame.sprite.Sprite):
             self.vel_y = 0
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.rect.x -= 5
+            self.rect.x -= self.move
         #end if
             
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.rect.x += 5
+
+            self.rect.x += self.move
         # end if
             
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             if self.rect.bottom == screen_y:
                 self.vel_y = -self.jump_height
         #end if
-    
+        wall_collisions = pygame.sprite.spritecollide(self, wall_list, False)
+        for wall in wall_collisions:
+            if self.move > 0:
+                self.rect.right = wall.rect.left
+            elif self.move < 0:
+                self.rect.left = wall.rect.right
+            if self.vel_y > 0:
+                self.rect.bottom = wall.rect.top
+            elif self.vel_y < 0:
+                self.rect.top = wall.rect.bottom
 #end class
             
 
@@ -134,9 +145,9 @@ wall_list = pygame.sprite.Group()
 for y in range(25):
     for x in range(30):
         if map[y][x]==1:
-            my_wall=Block(BLUE,20,20,(x*20),(y*20))
-            wall_list.add(my_wall)
-            all_sprites.add(my_wall)
+            wall=Block(BLUE,20,20,(x*20),(y*20))
+            wall_list.add(wall)
+            all_sprites.add(wall)
 plur=player()
 
 all_sprites.add(plur)
