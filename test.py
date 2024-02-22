@@ -36,6 +36,31 @@ screen_y = 500
 size = (screen_x, screen_y)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("The Tower")
+map =[[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 clock = pygame.time.Clock()
 
@@ -45,20 +70,34 @@ done = False
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
 #classes go here
+class Block(pygame.sprite.Sprite):
+    #Define the constructor for invader
+    def __init__(self,colour,width,height,x_ref,y_ref):
+        #Call the sprite constructor
+        super().__init__()
+        #Create a sprite and fill it with colour
+        self.image=pygame.Surface([width,height])
+        self.image.fill(colour)
+        self.rect=self.image.get_rect()#Set the position of the player attributes
+        self.rect.x=x_ref
+        self.rect.y=y_ref
+
+        def update(self):
+            self=self
+
 
 class player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.width = 20
-        self.height = 20
+        self.width = 5
+        self.height = 5
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE), 
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 480
-        self.jump_height= 20
+        self.jump_height= 12
         self.vel_y = 0
-
     
 
     def update(self):
@@ -88,28 +127,19 @@ class player(pygame.sprite.Sprite):
     
 #end class
             
-       
-
-
-#global variables
-x_val2 = 350
-enemy_count = 5
-x_val = 0
-y_val = 200
-x_offset = 1
-pi= 3.141592652
-counter = 0
-end = ""
-score = 0
 
 #create sprite groups
 all_sprites = pygame.sprite.Group()
-
+wall_list = pygame.sprite.Group()
+for y in range(25):
+    for x in range(30):
+        if map[y][x]==1:
+            my_wall=Block(BLUE,20,20,(x*20),(y*20))
+            wall_list.add(my_wall)
+            all_sprites.add(my_wall)
 plur=player()
 
 all_sprites.add(plur)
-#set the enemy count
-Invader_Num = enemy_count
 
 
  
