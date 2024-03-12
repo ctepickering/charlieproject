@@ -54,13 +54,13 @@ map =[[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 clock = pygame.time.Clock()
 
@@ -69,21 +69,8 @@ done = False
  
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
-#classes go here
-class Block(pygame.sprite.Sprite):
-    #Define the constructor for invader
-    def __init__(self,colour,width,height,x_ref,y_ref):
-        #Call the sprite constructor
-        super().__init__()
-        #Create a sprite and fill it with colour
-        self.image=pygame.Surface([width,height])
-        self.image.fill(colour)
-        self.rect=self.image.get_rect()#Set the position of the player attributes
-        self.rect.x=x_ref
-        self.rect.y=y_ref
 
-        def update(self):
-            self=self
+#classes go here
 
 
 class player(pygame.sprite.Sprite):
@@ -98,7 +85,7 @@ class player(pygame.sprite.Sprite):
         self.rect.y = 100
         self.jump_height= 12
         self.vel_y = 0
-        self.move = 5
+        self.move = 0
     
 
     def update(self):
@@ -114,29 +101,49 @@ class player(pygame.sprite.Sprite):
             self.vel_y = 0
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.rect.x -= self.move
+            self.move = -5
+            self.rect.x += self.move
         #end if
             
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-
+            self.move = 5
             self.rect.x += self.move
-        # end if
-            
+        # end if  
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             if self.rect.bottom == screen_y:
                 self.vel_y = -self.jump_height
         #end if
+        else :
+            self.move=0
         wall_collisions = pygame.sprite.spritecollide(self, wall_list, False)
         for wall in wall_collisions:
             if self.move > 0:
                 self.rect.right = wall.rect.left
             elif self.move < 0:
                 self.rect.left = wall.rect.right
-            if self.vel_y > 0:
+            elif self.rect.bottom > wall.rect.top:
                 self.rect.bottom = wall.rect.top
-            elif self.vel_y < 0:
-                self.rect.top = wall.rect.bottom
+                self.vel_y =0
+            #elif self.vel_y < 0:
+                #self.rect.top = wall.rect.bottom
 #end class
+                
+class Block(pygame.sprite.Sprite):
+    #Define the constructor for block
+    def __init__(self,colour,width,height,x_ref,y_ref):
+        #Call the sprite constructor
+        super().__init__()
+        self.width = width
+        self.height = height
+        #Create a sprite and fill it with colour
+        self.image=pygame.Surface([self.width,self.height])
+        self.image.fill(colour)
+        self.rect=self.image.get_rect()#Set the position of the player attributes
+        self.rect.x=x_ref
+        self.rect.y=y_ref
+
+        def update(self):
+            self=self
             
 
 #create sprite groups
