@@ -58,8 +58,8 @@ map =[[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
     [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 clock = pygame.time.Clock()
@@ -120,12 +120,15 @@ class player(pygame.sprite.Sprite):
             if self.move > 0:
                 self.rect.right = wall.rect.left
             elif self.move < 0:
+                # Otherwise if we are moving left, do the opposite.
                 self.rect.left = wall.rect.right
             elif self.rect.bottom > wall.rect.top:
                 self.rect.bottom = wall.rect.top
                 self.vel_y =0
-            #elif self.vel_y < 0:
-                #self.rect.top = wall.rect.bottom
+            elif self.vel_y < 0:
+                self.rect.top = wall.rect.bottom
+            elif self.vel_y==0:
+                self.rect.bottom = wall.rect.top
 #end class
                 
 class Block(pygame.sprite.Sprite):
