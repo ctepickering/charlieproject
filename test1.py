@@ -49,6 +49,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE),
         self.onWall=False
+        self.onBottom = False
  
         # Set a referance to the image rect.
         self.rect = self.image.get_rect()
@@ -63,7 +64,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         """ Move the player. """
         # Gravity
-        self.calc_grav()
+        #self.calc_grav()
  
         # Move left/right
         self.rect.x += self.change_x
@@ -76,20 +77,27 @@ class Player(pygame.sprite.Sprite):
             if self.change_x > 0:
                 self.rect.right = block.rect.left
                 self.onWall = True
+                self.onBottom = False
             if self.change_x < 0:
                 # Otherwise if we are moving left, do the opposite.
                 self.rect.left = block.rect.right
                 self.onWall = True
+                self.onBottom = False
             if self.change_y > 0:
                 self.rect.bottom = block.rect.top
-                self.onWall = False
+                #self.onWall = False
+                self.onBottom = True
                 self.change_y = 0
-            if self.change_y < 0: self.rect.top = block.rect.bottom
+            if self.change_y < 0: 
+                self.rect.top = block.rect.bottom
 
-            if self.onWall:
-                self.change_y = 2
+        if len(block_hit_list) == 0 :
+            self.onWall = False
+            #if self.onWall:
+                #self.change_y = 2
  
         # Move up/down
+        self.calc_grav()
         self.rect.y += self.change_y
  
         # Check and see if we hit anything
@@ -110,6 +118,8 @@ class Player(pygame.sprite.Sprite):
             self.change_y = 1
         else:
             self.change_y += .5
+        if self.onWall:
+                self.change_y = 2
  
         # See if we are on the ground.
         if self.rect.y >= SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
@@ -127,7 +137,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y -= 2
  
         # If it is ok to jump, set our speed upwards
-        if len(platform_hit_list) > 0 or self.rect.bottom >= SCREEN_HEIGHT:
+        if (len(platform_hit_list) > 0 and self.onBottom == True ) or self.rect.bottom >= SCREEN_HEIGHT:
             self.change_y = -7
  
     # Player-controlled movement:
