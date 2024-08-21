@@ -39,9 +39,6 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         """ Constructor function """
  
-        # Call the parent's constructor
-        super().__init__()
- 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
         self.width = 5
