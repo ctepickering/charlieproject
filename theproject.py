@@ -19,6 +19,13 @@ YELLOW = ((255,255,0))
 
 background = pygame.image.load('Background.png')
 
+world_data= []
+
+class World():
+    def __init__(self,data) -> None:
+        
+        block_img = pygame.image.load('blockimg.png')
+
 done= False
 clock = pygame.time.Clock()
 # -------- Main Program Loop -----------
