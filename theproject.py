@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 from pygame.locals import *
 pygame.init()
@@ -20,6 +21,19 @@ YELLOW = ((255,255,0))
 
 background = pygame.image.load('Background.png')
 
+class Player(pygame.sprite.Sprite):
+    # -- Methods
+    def __init__(self,x,y):
+        img = pygame.image.load('player.png')
+        self.image = pygame.transform.scale(img, (20, 20)) #scale player size
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y= y
+
+    def update(self):
+        screen.blit(self.image,self.rect)
+    
+ 
 
 tile_size = 25
 class World():
@@ -72,7 +86,7 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-
+player1 = Player(30, 605)
 level1= World(level1_map)
 
 
@@ -89,6 +103,7 @@ while not done:
 
     screen.blit(background, (0,0))
     level1.draw()
+    player1.update()
     pygame.display.update()
     
     #clock.tick(60)
