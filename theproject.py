@@ -29,6 +29,9 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y= y
+        self.jumped = False
+        self.vel_y = 0
+    #end func
 
     def update(self):
         screen.blit(self.image,self.rect)
@@ -42,17 +45,30 @@ class Player(pygame.sprite.Sprite):
             change_x += 1
         # end if  
 
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.vel_y = -5
+        if (keys[pygame.K_UP] or keys[pygame.K_w] ) and self.jumped == False:
+            self.vel_y = -10
+            self.jumped = True
+        #end if
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) == False:
+            self.jumped = False
 
 
+        #calculate gravity
+        self.vel_y+= 0.25
+        if self.vel_y >10:
+            self.vel_y =10
+        #end if
         change_y += self.vel_y
         #check for collisions
 
         #update player co ords
         self.rect.x += change_x
         self.rect.y += change_y
- 
+
+        if self.rect.bottom > screen_y :
+            self.rect.bottom = screen_y 
+            change_y = 0
+        #end if
 
 tile_size = 25
 class World():
