@@ -32,7 +32,26 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         screen.blit(self.image,self.rect)
-    
+        change_x = 0
+        change_y = 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            change_x -= 1 
+        #end if
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            change_x += 1
+        # end if  
+
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.vel_y = -5
+
+
+        change_y += self.vel_y
+        #check for collisions
+
+        #update player co ords
+        self.rect.x += change_x
+        self.rect.y += change_y
  
 
 tile_size = 25
