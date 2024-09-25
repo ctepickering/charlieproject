@@ -39,14 +39,14 @@ class Player(pygame.sprite.Sprite):
         change_y = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            change_x -= 1 
+            change_x -= 2 
         #end if
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            change_x += 1
+            change_x += 2
         # end if  
 
         if (keys[pygame.K_UP] or keys[pygame.K_w] ) and self.jumped == False:
-            self.vel_y = -10
+            self.vel_y = -4
             self.jumped = True
         #end if
         if (keys[pygame.K_UP] or keys[pygame.K_w]) == False:
@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
 
 
         #calculate gravity
-        self.vel_y+= 0.25
+        self.vel_y+= 0.0675
         if self.vel_y >10:
             self.vel_y =10
         #end if
