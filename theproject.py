@@ -6,7 +6,9 @@ pygame.init()
 screen_x =650
 screen_y = 650
 size = (screen_x, screen_y)
-clocj = pygame.time.Clock()
+clock = pygame.time.Clock()
+level= 1
+
 
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Tiny Knight")
@@ -31,12 +33,19 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y= y
+        self.width=self.image.get_width()
+        self.height=self.image.get_height()
         self.jumped = False
         self.vel_y = 0
     #end func
 
     def update(self):
+        # draw player # 
         screen.blit(self.image,self.rect)
+        pygame.draw.rect(screen, WHITE, self.rect, 1)
+
+        # player movement #
+
         change_x = 0
         change_y = 0
         keys = pygame.key.get_pressed()
@@ -58,15 +67,27 @@ class Player(pygame.sprite.Sprite):
             self.jumped = False
 
 
-        #calculate gravity
+        # calculate gravity #
+
         self.vel_y+= 0.5
         if self.vel_y >10:
             self.vel_y =10
         #end if
         change_y += self.vel_y
-        #check for collisions
 
-        #update player co ords
+        # check for collisions #
+        if level == 1 :
+            world = level1
+
+        for tile in world.tile_list :
+            if tile[1].colliderect(self.rect.x, self.rect.y + change_y, self.width, self.height) :
+                # check if bellow the ground #
+                if self.vel_y < 0 :
+                    change_y = tile[1].bottom - self.rect.top
+                if self.vel_y >= 0 :
+                    change_y = tile[1].top - self.rect.bottom
+
+        # update player co ords #
         self.rect.x += change_x
         self.rect.y += change_y
 
@@ -96,6 +117,7 @@ class World():
     def draw(self) :
         for tile in self.tile_list:
             screen.blit(tile[0],tile[1])
+            pygame.draw.rect(screen, WHITE, tile[1], 1)
         # next tile
     #end procedure
 
@@ -146,6 +168,5 @@ while not done:
     player1.update()
     pygame.display.update()
     
-    #clock.tick(60)
 #endwhile
 pygame.quit()
