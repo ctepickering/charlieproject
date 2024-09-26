@@ -6,9 +6,10 @@ pygame.init()
 screen_x =650
 screen_y = 650
 size = (screen_x, screen_y)
+clocj = pygame.time.Clock()
 
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("The Tower")
+pygame.display.set_caption("Tiny Knight")
 
 # Colours
 WHITE = ((255,255,255))
@@ -24,8 +25,9 @@ background = pygame.image.load('Background.png')
 class Player(pygame.sprite.Sprite):
     # -- Methods
     def __init__(self,x,y):
-        img = pygame.image.load('player.png')
-        self.image = pygame.transform.scale(img, (20, 20)) #scale player size
+        self.imgR = pygame.image.load('playerR.png')
+        self.imgL= pygame.image.load('playerL.png')
+        self.image = pygame.transform.scale(self.imgR, (20, 20)) #scale player size
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y= y
@@ -39,14 +41,17 @@ class Player(pygame.sprite.Sprite):
         change_y = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            change_x -= 2 
+            change_x -= 2.5
+            self.image = pygame.transform.scale(self.imgL, (20, 20))
         #end if
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            change_x += 2
+            change_x += 2.5
+            pygame.image.load('playerR.png')
+            self.image = pygame.transform.scale(self.imgR, (20, 20)) #scale player size
         # end if  
 
         if (keys[pygame.K_UP] or keys[pygame.K_w] ) and self.jumped == False:
-            self.vel_y = -4
+            self.vel_y = -10
             self.jumped = True
         #end if
         if (keys[pygame.K_UP] or keys[pygame.K_w]) == False:
@@ -54,7 +59,7 @@ class Player(pygame.sprite.Sprite):
 
 
         #calculate gravity
-        self.vel_y+= 0.0675
+        self.vel_y+= 0.5
         if self.vel_y >10:
             self.vel_y =10
         #end if
@@ -135,7 +140,7 @@ while not done:
             done = True # Flag that we are done so we exit this loop
     
     # --- Game logic should go here
-
+    clock.tick(60)
     screen.blit(background, (0,0))
     level1.draw()
     player1.update()
