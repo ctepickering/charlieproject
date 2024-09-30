@@ -1,6 +1,6 @@
 import pygame
 import random
-
+import math
 # Initialize the game engine
 pygame.init()
 
@@ -72,6 +72,24 @@ clock = pygame.time.Clock()
 
 #classes go here
 
+step = 0
+class star(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.width = 20
+        self.height = 20
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(WHITE), 
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 100
+        self.step = 0
+        self.vel_y = 0
+    def update(self):
+            self.step += 0.01
+            self.rect.x= 200 +  100* math.sin(self.step)
+     
+        
 
 class player(pygame.sprite.Sprite):
     def __init__(self):
@@ -159,9 +177,9 @@ for y in range(25):
             wall_list.add(wall)
             all_sprites.add(wall)
 plur=player()
-
+test = star()
 all_sprites.add(plur)
-
+all_sprites.add(test)
 
  
 # -------- Main Program Loop -----------
@@ -177,6 +195,7 @@ while not done:
     
     #update game objects
     all_sprites.update()
+    test.update()
     # --- Drawing code should go here
  
     # First, clear the screen to white. Don't put other drawing commands
