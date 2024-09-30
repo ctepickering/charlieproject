@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         change_y = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            change_x -= 2.5
+            change_x -= 2.75
             self.image = pygame.transform.scale(self.imgL, (20, 20))
         #end if
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -80,13 +80,17 @@ class Player(pygame.sprite.Sprite):
             world = level1
 
         for tile in world.tile_list :
+            # check for collision in x #
+            if tile[1].colliderect(self.rect.x +change_x, self.rect.y, self.width, self.height) :
+                change_x = 0
+            # check for collision in y #
             if tile[1].colliderect(self.rect.x, self.rect.y + change_y, self.width, self.height) :
                 # check if bellow the ground #
                 if self.vel_y < 0 :
                     change_y = tile[1].bottom - self.rect.top
-                if self.vel_y >= 0 :
+                    self.vel_y = 0
+                elif self.vel_y >= 0 :
                     change_y = tile[1].top - self.rect.bottom
-
         # update player co ords #
         self.rect.x += change_x
         self.rect.y += change_y
@@ -137,11 +141,11 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1],
+[1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1],
 [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
