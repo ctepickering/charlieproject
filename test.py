@@ -86,7 +86,7 @@ class star(pygame.sprite.Sprite):
         self.step = 0
         self.vel_y = 0
     def update(self):
-            self.step += 0.01
+            self.step += 0.05
             self.rect.x= 200 +  100* math.sin(self.step)
      
         

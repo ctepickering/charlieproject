@@ -1,6 +1,8 @@
 from typing import Any
 import pygame
 from pygame.locals import *
+import math
+
 pygame.init()
 # Screen setup
 screen_x =650
@@ -123,8 +125,30 @@ class World():
         # next tile
     #end procedure
 
-class Enemy1():
-    
+class Obstacle_type1(pygame.sprite.Sprite):
+    def __init__(self,startx,starty,direction):
+        self.width = 20
+        self.height = 20
+        self.img= pygame.image.load('movingspike.png')
+        self.image = pygame.transform.scale(self.img, (20, 20))
+        self.rect = self.image.get_rect()
+        self.rect.x = startx
+        self.rect.y = starty
+        self.anchor_pos = startx
+        self.step = 0
+        self.direction = direction
+    #end constructor
+    def update(self):
+            screen.blit(self.image,self.rect)
+            pygame.draw.rect(screen, WHITE, self.rect, 1)
+            if self.direction == 'p' :
+                self.step += 0.02
+            else :
+                self.step -= 0.02
+            self.rect.x =  self. anchor_pos +200* math.sin(self.step)
+    #end function
+#end class
+
 
 level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -155,6 +179,8 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
 player1 = Player(30, 605)
 level1= World(level1_map)
+enemy1 = Obstacle_type1(305, 303,'p')
+enemy2 = Obstacle_type1(305, 303,'n')
 
 
 done= False
@@ -171,6 +197,8 @@ while not done:
     screen.blit(background, (0,0))
     level1.draw()
     player1.update()
+    enemy1.update()
+    enemy2.update()
     pygame.display.update()
     
 #endwhile
