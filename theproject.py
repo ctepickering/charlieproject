@@ -13,7 +13,7 @@ level= 1
 
 
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Tiny Knight")
+pygame.display.set_caption("Tiny Robot")
 
 # Colours
 WHITE = ((255,255,255))
@@ -24,14 +24,17 @@ BLACK = ((0,0,0))
 ORANGE = ((255,100,10))
 YELLOW = ((255,255,0))
 
-background = pygame.image.load('Background.png')
+
+b_image = pygame.image.load('Background.png')
+background = pygame.transform.scale(b_image, (screen_x, screen_y))
+
 
 class Player(pygame.sprite.Sprite):
     # -- Methods
     def __init__(self,x,y):
         self.imgR = pygame.image.load('playerR.png')
         self.imgL= pygame.image.load('playerL.png')
-        self.image = pygame.transform.scale(self.imgR, (20, 20)) #scale player size
+        self.image = pygame.transform.scale(self.imgR, (20, 25)) #scale player size
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y= y
@@ -53,12 +56,12 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             change_x -= 2.75
-            self.image = pygame.transform.scale(self.imgL, (20, 20))
+            self.image = pygame.transform.scale(self.imgL, (20, 25))
         #end if
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             change_x += 2.5
             pygame.image.load('playerR.png')
-            self.image = pygame.transform.scale(self.imgR, (20, 20)) #scale player size
+            self.image = pygame.transform.scale(self.imgR, (20, 25)) #scale player size
         # end if  
 
         if (keys[pygame.K_UP] or keys[pygame.K_w] ) and self.jumped == False:
@@ -151,20 +154,20 @@ class Obstacle_type1(pygame.sprite.Sprite):
 
 
 level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1],
+[1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1],
@@ -179,9 +182,13 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
 player1 = Player(30, 605)
 level1= World(level1_map)
-enemy1 = Obstacle_type1(305, 303,'p')
+enemy1 = Obstacle_type1(280, 178,'p')
+enemy3 = Obstacle_type1(305, 303,'p')
 enemy2 = Obstacle_type1(305, 303,'n')
 
+spike_list = pygame.sprite.Group()
+
+spike_list
 
 done= False
 clock = pygame.time.Clock()
@@ -199,6 +206,7 @@ while not done:
     player1.update()
     enemy1.update()
     enemy2.update()
+    enemy3.update()
     pygame.display.update()
     
 #endwhile
