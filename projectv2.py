@@ -99,7 +99,7 @@ class Player(pygame.sprite.Sprite):
                     self.isJumped=False
 
         # collision with enemies # 
-        if pygame.sprite.spritecollide(self, spike_group, False):
+        if pygame.sprite.spritecollide(self, enemy_group, False):
             self.rect.x = self.startx
             self.rect.y = self.starty
 
@@ -118,7 +118,7 @@ class Enemy_type1(pygame.sprite.Sprite):
         super().__init__()
         self.width = 20
         self.height = 20
-        self.image = pygame.Surface([20,20])
+        self.image = pygame.Surface([self.width,self.height])
         self.image.fill(ORANGE)
         self.rect = self.image.get_rect()
         self.rect.x = startx
@@ -138,6 +138,21 @@ class Enemy_type1(pygame.sprite.Sprite):
     #end function
 #end class
 
+class Lava(pygame.sprite.Sprite):
+    def __init__(self,startx,starty):
+        super().__init__()
+        self.width = 25
+        self.height = 25
+        self.image = pygame.Surface([self.width,self.height])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = startx
+        self.rect.y = starty
+    # end constructor
+
+    def update(self):
+            screen.blit(self.image,self.rect)
+    # end function
 
 tile_size = 25
 class World():
@@ -157,10 +172,13 @@ class World():
                     self.tile_list.append(tile)
                 if tile == 2 : # check if tile is enemy p direction #
                     spike = Enemy_type1(column_pos * tile_size,row_pos * tile_size, 'p')
-                    spike_group.add(spike)
+                    enemy_group.add(spike)
                 if tile == 3 : # check if tile is enemy n direction #
                     spike = Enemy_type1(column_pos * tile_size,row_pos * tile_size, 'n')
-                    spike_group.add(spike)
+                    enemy_group.add(spike)
+                if tile == 4 : # check if it is lava #
+                    lava = Lava(column_pos * tile_size,row_pos * tile_size)
+                    enemy_group.add(lava)
                 column_pos = column_pos +1
             row_pos =row_pos +1
 
@@ -196,14 +214,14 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1],
 [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
-[1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+[1,0,0,0,0,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1],
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 # Objects #
 
 player1 = Player(30, 600)
 
-spike_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
 
 level1= World(level1_map)
 
@@ -224,7 +242,7 @@ while not done:
     clock.tick(60)
     screen.fill(BLACK)
     level1.draw()
-    spike_group.update()
+    enemy_group.update()
     player1.update()
 
     pygame.display.update()
