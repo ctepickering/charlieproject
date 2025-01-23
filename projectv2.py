@@ -2,12 +2,11 @@ from typing import Any
 import pygame
 from pygame.locals import *
 import math
+import random
 
 pygame.init()
 
 clock = pygame.time.Clock()
-
-level = 1
 
 # Screen setup #
 
@@ -44,10 +43,16 @@ class Player(pygame.sprite.Sprite):
         self.height=self.image.get_height()
         self.vel_y = 0
         self.isJumped = False
+        self.level = 0
+        self.level_max = 3
     #end func
 
     def update(self):
         
+        self.level = 1
+
+        self.level_max = 3
+
         # draw player # 
 
         screen.blit(self.image,self.rect)
@@ -81,7 +86,7 @@ class Player(pygame.sprite.Sprite):
 
         # check player collision #
 
-        if level == 1 :
+        if self.level == 1 :
             world = level1
 
         for tile in world.tile_list :
@@ -102,6 +107,13 @@ class Player(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, enemy_group, False):
             self.rect.x = self.startx
             self.rect.y = self.starty
+
+        # collision with checkpoint # 
+        if pygame.sprite.spritecollide(self, checkpoint_group, False):
+            if self.level < self.level_max :
+                self.level += 1
+            else :
+                pass
 
         # update player coordinates #
 
@@ -154,6 +166,60 @@ class Lava(pygame.sprite.Sprite):
             screen.blit(self.image,self.rect)
     # end function
 
+class Enemy_type3(pygame.sprite.Sprite):
+    def __init__(self,start_y):
+        super().__init__()
+        self.image = pygame.Surface([15,30])
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(25,screen_x-40)
+        self.rect.y= start_y - random.randint(1,100)
+        self.start_y = start_y - random.randint(1,100)
+        self.vel_y = 0
+    # end function
+
+    def update(self):
+            screen.blit(self.image,self.rect)
+
+            change_y = 0
+            
+            # calculate gravity #
+
+            self.vel_y+= 0.5
+            if self.vel_y >10:
+                self.vel_y =10
+            # end if
+
+            change_y +=self.vel_y
+
+            if self.rect.y > screen_y + random.randint(10,1000) :
+                self.rect.y = self.start_y
+                self.rect.x = random.randint(25,screen_x-40)
+                self.vel_y = 0
+            # end if 
+
+            self.rect.y += change_y
+
+    # end function
+
+class Level_End(pygame.sprite.Sprite):
+    def __init__(self,startx,starty):
+        super().__init__()
+        self.width = 45
+        self.height = 45
+        self.image = pygame.Surface([self.width,self.height])
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.x = startx
+        self.rect.y = starty
+    # end constructor
+
+    def update(self):
+            screen.blit(self.image,self.rect)
+    # end function
+
+
+
 tile_size = 25
 class World():
     def __init__(self,data) -> None:
@@ -179,6 +245,12 @@ class World():
                 if tile == 4 : # check if it is lava #
                     lava = Lava(column_pos * tile_size,row_pos * tile_size)
                     enemy_group.add(lava)
+                if tile == 5 : # check if falling debris #
+                    debris = Enemy_type3(row_pos * tile_size)
+                    enemy_group.add(debris)
+                if tile == 6 : # check if tile is level endpoint #
+                    checkpoint = Level_End(column_pos * tile_size + 2.5 ,row_pos * tile_size + 2.5 )
+                    checkpoint_group.add(checkpoint)
                 column_pos = column_pos +1
             row_pos =row_pos +1
 
@@ -190,9 +262,9 @@ class World():
     #end func
 
 
-level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
-[1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+level3_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,0,0,1,1,1,1,1,0,0,5,5,5,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1],
 [1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1],
@@ -217,13 +289,82 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1],
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
+level2_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,0,0,1,1,1,1,1,0,0,5,5,5,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1],
+[1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,1,1,0,0,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1],
+[1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1],
+[1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+[1,0,0,0,0,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
+level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1],
+[1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,1,1,0,0,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1],
+[1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1],
+[1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+[1,0,0,0,0,1,1,1,1,4,4,4,4,4,4,4,4,4,4,4,4,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
 # Objects #
 
 player1 = Player(30, 600)
 
 enemy_group = pygame.sprite.Group()
 
+checkpoint_group = pygame.sprite.Group()
+
+level_list = []
+
 level1= World(level1_map)
+
+level_list.append(level1)
+
+level2= World(level2_map)
+
+level_list.append(level2)
+
+level3= World(level3_map)
+
+level_list.append(level3)
+
 
 
 # Main Program Loop #
@@ -241,9 +382,10 @@ while not done:
 
     clock.tick(60)
     screen.fill(BLACK)
-    level1.draw()
+    level_list[player1.level].draw()
     enemy_group.update()
     player1.update()
+    checkpoint_group.update()
 
     pygame.display.update()
     
