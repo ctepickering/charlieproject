@@ -68,6 +68,9 @@ class Player(pygame.sprite.Sprite):
             self.vel_y = -10
             self.jumped = True
 
+        if pygame.sprite.spritecollide(self, enemy_group, False):
+            self.rect.x = self.startx
+            self.rect.y = self.starty
 
         # calculate gravity #
 
@@ -119,14 +122,32 @@ class World():
                     img_rect.y = row_pos * tile_size
                     tile = (img,img_rect)
                     self.tile_list.append(tile)
+                if tile == 4 : # check if it is lava #
+                    lava = Lava(column_pos * tile_size,row_pos * tile_size)
+                    enemy_group.add(lava)
                 column_pos = column_pos +1
             row_pos =row_pos +1
     def draw(self) :
         for tile in self.tile_list:
             screen.blit(tile[0],tile[1])
-            pygame.draw.rect(screen, WHITE, tile[1], 1)
         # next tile
     #end procedure
+
+class Lava(pygame.sprite.Sprite):
+    def __init__(self,startx,starty):
+        super().__init__()
+        self.width = 25
+        self.height = 25
+        self.img= pygame.image.load('acid.png')
+        self.image = pygame.transform.scale(self.img, (25, 25))
+        self.rect = self.image.get_rect()
+        self.rect.x = startx
+        self.rect.y = starty
+    # end constructor
+
+    def update(self):
+            screen.blit(self.image,self.rect)
+    # end function
 
 class Obstacle_type1(pygame.sprite.Sprite):
     def __init__(self,startx,starty,direction):
@@ -154,11 +175,11 @@ class Obstacle_type1(pygame.sprite.Sprite):
 
 
 level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-[1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1],
-[1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1],
+[1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+[1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1],
+[1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1],
@@ -176,12 +197,14 @@ level1_map= [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
+[1,0,0,1,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
+enemy_group = pygame.sprite.Group()
 player1 = Player(30, 605)
 level1= World(level1_map)
+
 enemy1 = Obstacle_type1(280, 178,'p')
 enemy3 = Obstacle_type1(305, 303,'p')
 enemy2 = Obstacle_type1(305, 303,'n')
@@ -207,6 +230,7 @@ while not done:
     enemy1.update()
     enemy2.update()
     enemy3.update()
+    enemy_group.update()
     pygame.display.update()
     
 #endwhile
