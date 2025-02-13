@@ -14,6 +14,9 @@ screen_x = 650
 screen_y = 650
 size = (screen_x, screen_y)
 
+b_image = pygame.image.load('Background.png')
+background = pygame.transform.scale(b_image, (screen_x, screen_y))
+
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Tiny Robot")
 
@@ -126,7 +129,7 @@ class Enemy_type1(pygame.sprite.Sprite):
         super().__init__()
         self.width = 20
         self.height = 20
-        self.img= pygame.image.load('movingspike.png')
+        self.img= pygame.image.load('movingspike2.png')
         self.image = pygame.transform.scale(self.img, (20, 20))
         self.rect = self.image.get_rect()
         self.rect.x = startx
@@ -137,7 +140,6 @@ class Enemy_type1(pygame.sprite.Sprite):
     #end constructor
     def update(self):
             screen.blit(self.image,self.rect)
-            pygame.draw.rect(screen, WHITE, self.rect, 1)
             if self.direction == 'p' :
                 self.step += 0.02
             else :
@@ -165,8 +167,8 @@ class Lava(pygame.sprite.Sprite):
 class Enemy_type3(pygame.sprite.Sprite):
     def __init__(self,start_y):
         super().__init__()
-        self.image = pygame.Surface([15,30])
-        self.image.fill(YELLOW)
+        self.img= pygame.image.load('fallingspike.png')
+        self.image = pygame.transform.scale(self.img, (15, 30))
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(25,screen_x-40)
         self.rect.y= start_y - random.randint(1,100)
@@ -204,7 +206,7 @@ class Level_End(pygame.sprite.Sprite):
         self.width = 45
         self.height = 45
         self.img= pygame.image.load('portal.png')
-        self.image = pygame.transform.scale(self.img, (50, 50))
+        self.image = pygame.transform.scale(self.img, (45, 45))
         self.rect = self.image.get_rect()
         self.rect.x = startx
         self.rect.y = starty
@@ -221,12 +223,12 @@ class World():
     def __init__(self,data) -> None:
         self.tile_list = []
         row_pos = 0
+        block_img = pygame.image.load('block.png')
         for row in data :
             column_pos = 0
             for tile in row :
                 if tile == 1 : # the tile is a block #
-                    img = pygame.Surface([tile_size,tile_size])
-                    img.fill(GREEN)
+                    img = pygame.transform.scale(block_img, (tile_size, tile_size)) #scale block image to size of block
                     img_rect = img.get_rect()
                     img_rect.x = column_pos * tile_size
                     img_rect.y = row_pos * tile_size
@@ -254,7 +256,7 @@ class World():
     def draw(self) :
         for tile in self.tile_list:
             screen.blit(tile[0],tile[1])
-            pygame.draw.rect(screen, WHITE, tile[1], 1)
+ 
     #end func
 
 
@@ -390,7 +392,7 @@ while not done:
         player1.levelDone = False
     #end if
     clock.tick(60)
-    screen.fill(BLACK)
+    screen.blit(background, (0,0))
     current_level.draw()
     enemy_group.update()
     player1.update()
