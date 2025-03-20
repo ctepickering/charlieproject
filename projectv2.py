@@ -37,8 +37,9 @@ YELLOW = ((255,255,0))
 class Player(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
-        self.image = pygame.Surface([20,25])
-        self.image.fill(BLUE)
+        self.imgR= pygame.image.load('playerR.png')
+        self.imgL= pygame.image.load('playerL.png')
+        self.image = pygame.transform.scale(self.imgR, (20, 25))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y= y
@@ -58,8 +59,7 @@ class Player(pygame.sprite.Sprite):
         # draw player # 
 
         screen.blit(self.image,self.rect)
-        pygame.draw.rect(screen, WHITE, self.rect, 1)
-
+        
         # player movement #
 
         change_x = 0
@@ -68,9 +68,11 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             change_x -= 3
+            self.image = pygame.transform.scale(self.imgL, (20, 25))
         #end if
         if keys[pygame.K_RIGHT]:
             change_x += 3
+            self.image = pygame.transform.scale(self.imgR, (20, 25))
         # end if  
         if keys[pygame.K_UP] and self.isJumped == False:
             self.vel_y = -10
@@ -129,7 +131,7 @@ class Enemy_type1(pygame.sprite.Sprite):
         super().__init__()
         self.width = 20
         self.height = 20
-        self.img= pygame.image.load('movingspike2.png')
+        self.img= pygame.image.load('movingspike.png')
         self.image = pygame.transform.scale(self.img, (20, 20))
         self.rect = self.image.get_rect()
         self.rect.x = startx
